@@ -57,7 +57,7 @@ class YSToast: NSObject {
         label.layer.cornerRadius = 3
         label.numberOfLines = 0
         label.textColor = .white
-        label.backgroundColor = UIColor(hex: "#000000a2")
+        label.backgroundColor = UIColor(displayP3Red: 0, green: 0, blue: 0, alpha: 0.3)
         label.layer.masksToBounds = true
         let maxSize = CGSize(width: 120, height: CGFloat.greatestFiniteMagnitude)
         let attrs: [NSAttributedString.Key : Any] = [NSAttributedString.Key.font: label.font!]
