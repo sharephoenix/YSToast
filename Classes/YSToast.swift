@@ -28,19 +28,11 @@ class YSToast: NSObject {
 
     @objc var duration = 1.5    /// toast 停留时间
 
-    public var direction: Direction = .TC
-
-    private var imageStack: [UIView] = [UIView]()
-
-    var offsetX: CGFloat = 0
-    var offsetY: CGFloat = 0//79.0 + UIApplication.shared.statusBarFrame.height
+    private var imageStack: [UIView & YSToastProtocol] = [UIView & YSToastProtocol]()
 
     private var isRunning = false
 
-    @objc func showSyncView(_ view: UIView?) {
-        guard let view = view else {
-            return
-        }
+    public func showSyncView(_ view: UIView & YSToastProtocol) {
         imageStack.append(view)
         toAutoRun()
     }
@@ -50,7 +42,7 @@ class YSToast: NSObject {
             perform(#selector(showToast(_:sync:)), on: Thread.main, with: content, waitUntilDone: false)
             return
         }
-        let label = UILabel()
+        let label = YSToastLabel()
         label.text = content as String
         label.textColor = .white
         label.textAlignment = .center
@@ -63,7 +55,10 @@ class YSToast: NSObject {
         let attrs: [NSAttributedString.Key : Any] = [NSAttributedString.Key.font: label.font!]
         let options: NSStringDrawingOptions = .usesLineFragmentOrigin
 
-        let size = content.boundingRect(with: maxSize, options: options, attributes: attrs, context: nil).size
+        let size = content.boundingRect(with: maxSize,
+                                        options: options,
+                                        attributes: attrs,
+                                        context: nil).size
         label.frame = CGRect(x: 0, y: 0, width: 120, height: size.height + 22)
         duration = 2
         if sync {
@@ -73,19 +68,20 @@ class YSToast: NSObject {
         }
     }
 
-    /// 无堆栈 toast
+    /// 无堆栈 toast，注意：必须在主线中
     ///
     /// - Parameter view: 需要弹出的 view
-    @objc func showAsyncView(_ view: UIView) {
-        if !Thread.current.isMainThread {
-            perform(#selector(showAsyncView(_:)), on: Thread.main, with: view, waitUntilDone: false)
+    public func showAsyncView(_ view: UIView & YSToastProtocol) {
+        guard let parentView = view.ys_parentView() else {
             return
         }
-        guard let window = UIApplication.shared.windows.first else {
-            return
-        }
-        window.addSubview(view)
-        resetUI(view, parentView: window)
+        parentView.addSubview(view)
+        let model = YSToastModel(direction: view.ys_direction(),
+                                 popSize: view.ys_size(),
+                                 popOffset: view.ys_offset(),
+                                 parentView: view.ys_parentView(),
+                                 customView: view)
+        resetUI(model)
         animation(view, finish: { _ in
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + self.duration, execute: {
                 view.removeFromSuperview()
@@ -110,15 +106,21 @@ class YSToast: NSObject {
             perform(#selector(toAutoRun), on: Thread.main, with: nil, waitUntilDone: false)
             return
         }
-        guard let window = UIApplication.shared.windows.first,
-            !isRunning,
-            let view = imageStack.first else {
+        guard let view = imageStack.first,
+            let parentView = view.ys_parentView(),
+            !isRunning else {
             return
         }
 
         isRunning = true
-        window.addSubview(view)
-        resetUI(view, parentView: window)
+        parentView.addSubview(view)
+        let model = YSToastModel(direction: view.ys_direction(),
+        popSize: view.ys_size(),
+        popOffset: view.ys_offset(),
+        parentView: view.ys_parentView(),
+        customView: view)
+        
+        resetUI(model)
         animation(view, finish: { _ in
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + self.duration, execute: {
                 if self.imageStack.count > 0 {
@@ -138,72 +140,144 @@ class YSToast: NSObject {
     /// 重新给需要 toast 的 View 布局
     ///
     /// - Parameter view: 需要重置布局的 view
-    private func resetUI(_ view: UIView, parentView: UIView) {
-        switch direction {
+    private func resetUI(_ model: YSToastModel) {
+        switch model.direction {
         case .TC:
-            resetUITC(view, parentView: parentView)
+            resetUITC(model)
         case .TL:
-            resetUITL(view, parentView: parentView)
+            resetUITL(model)
         case .TR:
-            resetUITR(view, parentView: parentView)
+            resetUITR(model)
         case .RC:
-            resetUIRC(view, parentView: parentView)
+            resetUIRC(model)
         case .LC:
-            resetUILC(view, parentView: parentView)
+            resetUILC(model)
         case .CC:
-            resetUICC(view, parentView: parentView)
+            resetUICC(model)
         case .BC:
-            resetUIBC(view, parentView: parentView)
+            resetUIBC(model)
         case .BL:
-            resetUIBL(view, parentView: parentView)
+            resetUIBL(model)
         case .BR:
-            resetUIBR(view, parentView: parentView)
+            resetUIBR(model)
         }
     }
 
-    private func resetUITC(_ view: UIView, parentView: UIView) {
-        view.frame = CGRect(x: parentView.bounds.width / 2.0 - view.frame.width / 2.0 + offsetX, y: offsetY, width: view.frame.width, height: view.frame.height)
+    private func resetUITC(_ model: YSToastModel) {
+        guard let view = model.ys_view(), let parentView = model.ys_parentView() else {
+            return
+        }
+        let offsetX = model.ys_offset().horizontal
+        let offsetY = model.ys_offset().vertical
+        view.frame = CGRect(x: parentView.bounds.width / 2.0 - view.frame.width / 2.0 + offsetX,
+                            y: offsetY,
+                            width: model.ys_size().width,
+                            height: model.ys_size().height)
     }
 
-    private func resetUICC(_ view: UIView, parentView: UIView) {
-        view.frame = CGRect(x: parentView.bounds.width / 2.0 - view.frame.width / 2.0 + offsetX, y: offsetY, width: view.frame.width, height: view.frame.height)
+    private func resetUICC(_ model: YSToastModel) {
+        guard let view = model.ys_view(), let parentView = model.ys_parentView() else {
+            return
+        }
+        let offsetX = model.ys_offset().horizontal
+        let offsetY = model.ys_offset().vertical
+        view.frame = CGRect(x: parentView.bounds.width / 2.0 - view.frame.width / 2.0 + offsetX,
+                            y: offsetY,
+                            width: model.ys_size().width,
+                            height: model.ys_size().height)
         view.center = CGPoint(x: parentView.bounds.width / 2, y: parentView.bounds.height / 2)
     }
 
-    private func resetUITL(_ view: UIView, parentView: UIView) {
-        view.frame = CGRect(x: 0 + offsetX, y: offsetY + 0, width: view.frame.width, height: view.frame.height)
+    private func resetUITL(_ model: YSToastModel) {
+        guard let view = model.ys_view() else {
+            return
+        }
+        let offsetX = model.ys_offset().horizontal
+        let offsetY = model.ys_offset().vertical
+        view.frame = CGRect(x: 0 + offsetX,
+                            y: offsetY + 0,
+                            width: model.ys_size().width,
+                            height: model.ys_size().height)
     }
 
-    private func resetUITR(_ view: UIView, parentView: UIView) {
-        view.frame = CGRect(x: parentView.bounds.width - view.frame.width + offsetX, y: offsetY + 0, width: view.frame.width, height: view.frame.height)
+    private func resetUITR(_ model: YSToastModel) {
+        guard let view = model.ys_view(), let parentView = model.ys_parentView() else {
+            return
+        }
+        let offsetX = model.ys_offset().horizontal
+        let offsetY = model.ys_offset().vertical
+        view.frame = CGRect(x: parentView.bounds.width - view.frame.width + offsetX,
+                            y: offsetY + 0,
+                            width: model.ys_size().width,
+                            height: model.ys_size().height)
     }
 
-    private func resetUILC(_ view: UIView, parentView: UIView) {
-        view.frame = CGRect(x: 0 + offsetX, y: offsetY + 0, width: view.frame.width, height: view.frame.height)
+    private func resetUILC(_ model: YSToastModel) {
+        guard let view = model.ys_view(), let parentView = model.ys_parentView() else {
+            return
+        }
+        let offsetX = model.ys_offset().horizontal
+        let offsetY = model.ys_offset().vertical
+        view.frame = CGRect(x: 0 + offsetX,
+                            y: offsetY + 0,
+                            width: model.ys_size().width,
+                            height: model.ys_size().height)
         view.center = CGPoint(x: view.bounds.width / 2 + offsetX,
                               y: parentView.bounds.height / 2 + offsetY)
     }
 
-    private func resetUIRC(_ view: UIView, parentView: UIView) {
-        view.frame = CGRect(x: 0 + offsetX, y: offsetY + 0, width: view.frame.width, height: view.frame.height)
+    private func resetUIRC(_ model: YSToastModel) {
+        guard let view = model.ys_view(), let parentView = model.ys_parentView() else {
+            return
+        }
+        let offsetX = model.ys_offset().horizontal
+        let offsetY = model.ys_offset().vertical
+        view.frame = CGRect(x: 0 + offsetX,
+                            y: offsetY + 0,
+                            width: model.ys_size().width,
+                            height: model.ys_size().height)
         view.center = CGPoint(x: parentView.bounds.width - view.bounds.width / 2 + offsetX,
                               y: parentView.bounds.height / 2 + offsetY)
     }
 
-    private func resetUIBC(_ view: UIView, parentView: UIView) {
-        view.frame = CGRect(x: 0 + offsetX, y: offsetY + 0, width: view.frame.width, height: view.frame.height)
+    private func resetUIBC(_ model: YSToastModel) {
+        guard let view = model.ys_view(), let parentView = model.ys_parentView() else {
+            return
+        }
+        let offsetX = model.ys_offset().horizontal
+        let offsetY = model.ys_offset().vertical
+        view.frame = CGRect(x: 0 + offsetX,
+                            y: offsetY + 0,
+                            width: model.ys_size().width,
+                            height: model.ys_size().height)
         view.center = CGPoint(x: parentView.bounds.width / 2 + offsetX,
                               y: parentView.bounds.height - view.bounds.height / 2 + offsetY)
     }
 
-    private func resetUIBL(_ view: UIView, parentView: UIView) {
-        view.frame = CGRect(x: 0 + offsetX, y: offsetY + 0, width: view.frame.width, height: view.frame.height)
+    private func resetUIBL(_ model: YSToastModel) {
+        guard let view = model.ys_view(), let parentView = model.ys_parentView() else {
+            return
+        }
+        let offsetX = model.ys_offset().horizontal
+        let offsetY = model.ys_offset().vertical
+        view.frame = CGRect(x: 0 + offsetX,
+                            y: offsetY + 0,
+                            width: model.ys_size().width,
+                            height: model.ys_size().height)
         view.center = CGPoint(x: view.bounds.width / 2 + offsetX,
                               y: parentView.bounds.height - view.bounds.height / 2 + offsetY)
     }
 
-    private func resetUIBR(_ view: UIView, parentView: UIView) {
-        view.frame = CGRect(x: 0 + offsetX, y: offsetY + 0, width: view.frame.width, height: view.frame.height)
+    private func resetUIBR(_ model: YSToastModel) {
+        guard let view = model.ys_view(), let parentView = model.ys_parentView() else {
+            return
+        }
+        let offsetX = model.ys_offset().horizontal
+        let offsetY = model.ys_offset().vertical
+        view.frame = CGRect(x: 0 + offsetX,
+                            y: offsetY + 0,
+                            width: model.ys_size().width,
+                            height: model.ys_size().height)
         view.center = CGPoint(x: parentView.bounds.width - view.bounds.width / 2 + offsetX,
                               y: parentView.bounds.height - view.bounds.height / 2 + offsetY)
     }
@@ -219,5 +293,81 @@ class YSToast: NSObject {
         }) { flag in
             finish(flag)
         }
+    }
+}
+
+struct YSToastModel: YSToastProtocol {
+    var direction: YSToast.Direction = .CC
+    var popSize: CGSize = CGSize()
+    var popOffset: UIOffset = UIOffset(horizontal: 0, vertical: 0)
+    weak var parentView: UIView?
+    weak var customView: UIView?
+    
+    func ys_direction() -> YSToast.Direction {
+        return direction
+    }
+    
+    func ys_size() -> CGSize {
+        return popSize
+    }
+    
+    func ys_offset() -> UIOffset {
+        return popOffset
+    }
+    
+    func ys_parentView() -> UIView? {
+        guard let parent = parentView else {
+            return UIApplication.shared.windows.first
+        }
+        return parent
+    }
+    
+    func ys_view() -> UIView? {
+        return customView
+    }
+}
+
+class YSToastLabel: UILabel, YSToastProtocol {
+    func ys_view() -> UIView {
+        return self
+    }
+    
+    func ys_direction() -> YSToast.Direction {
+        return .CC
+    }
+}
+
+protocol YSToastProtocol {
+    // 弹框的位置
+    func ys_direction() -> YSToast.Direction
+    // 弹框的 Size
+    func ys_size() -> CGSize
+    // 弹框 View 的偏移
+    func ys_offset() -> UIOffset
+    // parentView
+    func ys_parentView() -> UIView?
+    // customView
+    func ys_view() -> UIView?
+}
+
+extension YSToastProtocol {
+    func ys_direction() -> YSToast.Direction {
+        return .CC
+    }
+    
+    func ys_size() -> CGSize {
+        return CGSize(width: 200, height: 33)
+    }
+    
+    func ys_offset() -> UIOffset {
+        return UIOffset(horizontal: 0, vertical: 0)
+    }
+    
+    func ys_parentView() -> UIView? {
+        return UIApplication.shared.windows.last
+    }
+    
+    func ys_view() -> UIView? {
+        return nil
     }
 }
