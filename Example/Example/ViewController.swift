@@ -29,7 +29,7 @@ class ViewController: UIViewController {
     
     private func createAction() {
         testBtn.reactive.controlEvents(UIControl.Event.touchUpInside).observeValues { btn in
-            YSToast.instance.showToast("this is my toast")
+//            YSToast.instance.showToast("this is my toast")
             let customView = CustomToastLabel()
             customView.text = "this is my test tittle"
             YSToast.instance.showAsyncView(customView)
@@ -44,6 +44,7 @@ class ViewController: UIViewController {
 }
 
 class CustomToastLabel: UILabel, YSToastProtocol {
+    // 这个可以默认不写
     func ys_view() -> UIView {
         return self
     }

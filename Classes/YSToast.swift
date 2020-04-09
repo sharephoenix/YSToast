@@ -350,7 +350,7 @@ protocol YSToastProtocol {
     func ys_view() -> UIView?
 }
 
-extension YSToastProtocol {
+extension YSToastProtocol where Self: UIView {
     func ys_direction() -> YSToast.Direction {
         return .CC
     }
@@ -368,6 +368,6 @@ extension YSToastProtocol {
     }
     
     func ys_view() -> UIView? {
-        return nil
+        return self
     }
 }
