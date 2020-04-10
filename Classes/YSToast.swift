@@ -49,17 +49,25 @@ class YSToast: NSObject {
         label.layer.cornerRadius = 3
         label.numberOfLines = 0
         label.textColor = .white
-        label.backgroundColor = UIColor(displayP3Red: 0, green: 0, blue: 0, alpha: 0.3)
+        label.backgroundColor = UIColor(displayP3Red: 0, green: 0, blue: 0, alpha: 0.7)
         label.layer.masksToBounds = true
-        let maxSize = CGSize(width: 120, height: CGFloat.greatestFiniteMagnitude)
+        var maxSize = CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
         let attrs: [NSAttributedString.Key : Any] = [NSAttributedString.Key.font: label.font!]
         let options: NSStringDrawingOptions = .usesLineFragmentOrigin
-
-        let size = content.boundingRect(with: maxSize,
+        let maxWidth: CGFloat = 200
+        var size = content.boundingRect(with: maxSize,
                                         options: options,
                                         attributes: attrs,
                                         context: nil).size
-        label.frame = CGRect(x: 0, y: 0, width: 120, height: size.height + 22)
+        if size.width > maxWidth {
+            maxSize = CGSize(width: maxWidth, height: CGFloat.greatestFiniteMagnitude)
+            size = content.boundingRect(with: maxSize,
+                                    options: options,
+                                    attributes: attrs,
+                                    context: nil).size
+        }
+        label.frame = CGRect(x: 0, y: 0, width: size.width, height: size.height + 22)
+        label.size = size
         duration = 2
         if sync {
             showSyncView(label)
@@ -328,12 +336,19 @@ struct YSToastModel: YSToastProtocol {
 }
 
 class YSToastLabel: UILabel, YSToastProtocol {
+
+    var size: CGSize = CGSize.zero
+
     func ys_view() -> UIView {
         return self
     }
     
     func ys_direction() -> YSToast.Direction {
         return .CC
+    }
+
+    func ys_size() -> CGSize {
+        return size
     }
 }
 
