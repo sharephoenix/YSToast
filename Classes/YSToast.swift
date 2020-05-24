@@ -22,7 +22,7 @@ class YSToast: NSObject {
         case BR = 8
     }
 
-    @objc static let instance = YSToast()
+    @objc public static let instance = YSToast()
 
     private override init() {}
 
