@@ -8,7 +8,7 @@
 
 import UIKit
 
-class YSToast: NSObject {
+public class YSToast: NSObject {
 
     public enum Direction: Int {
         case TC = 0 // T:TOP,C:CENTER,L:LEFT,R:RIGHT,B:BOTTOM
@@ -22,11 +22,11 @@ class YSToast: NSObject {
         case BR = 8
     }
 
-    @objc static let instance = YSToast()
+    @objc public static let instance = YSToast()
 
     private override init() {}
 
-    @objc var duration = 1.5    /// toast 停留时间
+    @objc public var duration = 1.5    /// toast 停留时间
 
     private var imageStack: [UIView & YSToastProtocol] = [UIView & YSToastProtocol]()
 
@@ -37,7 +37,7 @@ class YSToast: NSObject {
         toAutoRun()
     }
 
-    @objc func showToast(_ content: NSString, sync: Bool = true) {
+    @objc public func showToast(_ content: NSString, sync: Bool = true) {
         if !Thread.current.isMainThread {
             perform(#selector(showToast(_:sync:)), on: Thread.main, with: content, waitUntilDone: false)
             return
@@ -98,7 +98,7 @@ class YSToast: NSObject {
     }
 
     /// 清理所有 toast UI
-    @objc func clearToast() {
+    @objc public func clearToast() {
         if imageStack.count <= 1 {
             return
         }
@@ -335,7 +335,7 @@ struct YSToastModel: YSToastProtocol {
     }
 }
 
-class YSToastLabel: UILabel, YSToastProtocol {
+class YSToastLabel: UILabel {
 
     var size: CGSize = CGSize.zero
 
@@ -352,7 +352,7 @@ class YSToastLabel: UILabel, YSToastProtocol {
     }
 }
 
-protocol YSToastProtocol {
+public protocol YSToastProtocol {
     // 弹框的位置
     func ys_direction() -> YSToast.Direction
     // 弹框的 Size
@@ -365,7 +365,7 @@ protocol YSToastProtocol {
     func ys_view() -> UIView?
 }
 
-extension YSToastProtocol where Self: UIView {
+public extension YSToastProtocol where Self: UIView {
     func ys_direction() -> YSToast.Direction {
         return .CC
     }
@@ -385,4 +385,8 @@ extension YSToastProtocol where Self: UIView {
     func ys_view() -> UIView? {
         return self
     }
+}
+
+extension UIView: YSToastProtocol {
+
 }

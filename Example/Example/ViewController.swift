@@ -10,6 +10,7 @@ import UIKit
 import SnapKit
 import ReactiveSwift
 import ReactiveCocoa
+import YSToast
 
 class ViewController: UIViewController {
     override func viewDidLoad() {
@@ -43,7 +44,7 @@ class ViewController: UIViewController {
     }()
 }
 
-class CustomToastLabel: UILabel, YSToastProtocol {
+class CustomToastLabel: UILabel {
     // 这个可以默认不写
     func ys_view() -> UIView {
         return self

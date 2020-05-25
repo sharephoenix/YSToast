@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		07D6D5CF243F5F8500E9C97C /* YSToast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D6D5CE243F5F8500E9C97C /* YSToast.swift */; };
 		07F6E030243F5EA800F63B00 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07F6E02F243F5EA800F63B00 /* AppDelegate.swift */; };
 		07F6E032243F5EA800F63B00 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07F6E031243F5EA800F63B00 /* SceneDelegate.swift */; };
 		07F6E034243F5EA800F63B00 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07F6E033243F5EA800F63B00 /* ViewController.swift */; };
@@ -37,7 +36,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		07D6D5CE243F5F8500E9C97C /* YSToast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YSToast.swift; sourceTree = "<group>"; };
 		07F6E02C243F5EA800F63B00 /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		07F6E02F243F5EA800F63B00 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		07F6E031243F5EA800F63B00 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -83,15 +81,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		07D6D5CD243F5F8500E9C97C /* Classes */ = {
-			isa = PBXGroup;
-			children = (
-				07D6D5CE243F5F8500E9C97C /* YSToast.swift */,
-			);
-			name = Classes;
-			path = ../../Classes;
-			sourceTree = "<group>";
-		};
 		07F6E023243F5EA800F63B00 = {
 			isa = PBXGroup;
 			children = (
@@ -117,7 +106,6 @@
 		07F6E02E243F5EA800F63B00 /* Example */ = {
 			isa = PBXGroup;
 			children = (
-				07D6D5CD243F5F8500E9C97C /* Classes */,
 				07F6E02F243F5EA800F63B00 /* AppDelegate.swift */,
 				07F6E031243F5EA800F63B00 /* SceneDelegate.swift */,
 				07F6E033243F5EA800F63B00 /* ViewController.swift */,
@@ -342,7 +330,6 @@
 				07F6E034243F5EA800F63B00 /* ViewController.swift in Sources */,
 				07F6E030243F5EA800F63B00 /* AppDelegate.swift in Sources */,
 				07F6E032243F5EA800F63B00 /* SceneDelegate.swift in Sources */,
-				07D6D5CF243F5F8500E9C97C /* YSToast.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -518,6 +505,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = Example/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -536,6 +524,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = Example/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

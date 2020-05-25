@@ -10,13 +10,15 @@ PODS:
   - Result (4.1.0)
   - SnapKit (5.0.1)
   - SwiftSoup (2.3.1)
+  - YSToast (1.0.2.1)
 
 DEPENDENCIES:
   - Alamofire
   - Kingfisher
-  - ReactiveCocoa (~> 9.0)
+  - ReactiveCocoa
   - SnapKit
   - SwiftSoup
+  - YSToast (from `../`)
 
 SPEC REPOS:
   trunk:
@@ -28,6 +30,10 @@ SPEC REPOS:
     - SnapKit
     - SwiftSoup
 
+EXTERNAL SOURCES:
+  YSToast:
+    :path: "../"
+
 SPEC CHECKSUMS:
   Alamofire: 9d5c5f602928e512395b30950c5984eca840093c
   Kingfisher: d2b3d6a7200c93b34de9afcdf25c8dd9282ec277
@@ -36,7 +42,8 @@ SPEC CHECKSUMS:
   Result: bd966fac789cc6c1563440b348ab2598cc24d5c7
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
   SwiftSoup: e5af192bc99be8398d5f93e15ff6a3c80ba81de1
+  YSToast: 10ecbb266ad17600a902d2a31d0da86452678f83
 
-PODFILE CHECKSUM: 666cc7ff2b3a1ca7c40932b06447b7704f0e8286
+PODFILE CHECKSUM: 3af568a1f5e0ca37910388b7c03c35775a55a6d9
 
 COCOAPODS: 1.9.1
