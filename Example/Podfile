@@ -1,18 +1,20 @@
 # Uncomment this line to define a global platform for your project
 platform :ios, '10.0'
+source 'https://github.com/CocoaPods/Specs.git'
+source 'https://github.com/sharephoenix/iOSYSSpec'
 # Comment this line if you're not using Swift and don't want to use dynamic frameworks
 use_frameworks!
 
 target 'Example' do
     # 响应编程 另外一个是 RxSwift, ReactiveCocoa
-#    pod 'RxSwift', '~> 5'
+   pod 'RxSwift', '~> 5'
 #    pod 'RxCocoa', '~> 5'
     pod 'ReactiveCocoa' #, '~> 9.0'
 
-    pod 'Alamofire' #, '~> 4.0.1'
-    pod 'Kingfisher' #, '~> 3.1.1'
+    # pod 'Alamofire' #, '~> 4.0.1'
+    # pod 'Kingfisher' #, '~> 3.1.1'
     pod 'SnapKit' #, '~> 4.2.0'
-    pod 'SwiftSoup' # html 标签解析 puppeteer
-    pod 'YSToast', '~>1.0.2.2'
-#    pod 'YSToast', :path => '../'
+    # pod 'SwiftSoup' # html 标签解析 puppeteer
+    # pod 'YSToast', '1.0.2.2'
+   pod 'YSToast', :path => '../'
 end
