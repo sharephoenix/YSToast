@@ -42,6 +42,7 @@ public class YSToast: NSObject {
             perform(#selector(showToast(_:sync:)), on: Thread.main, with: content, waitUntilDone: false)
             return
         }
+        
         let label = YSToastLabel()
         label.text = content as String
         label.textColor = .white
@@ -127,7 +128,7 @@ public class YSToast: NSObject {
         popOffset: view.ys_offset(),
         parentView: view.ys_parentView(),
         customView: view)
-        
+
         resetUI(model)
         animation(view, finish: { _ in
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + self.duration, execute: {
@@ -177,7 +178,7 @@ public class YSToast: NSObject {
         }
         let offsetX = model.ys_offset().horizontal
         let offsetY = model.ys_offset().vertical
-        view.frame = CGRect(x: parentView.bounds.width / 2.0 - view.frame.width / 2.0 + offsetX,
+        view.frame = CGRect(x: parentView.bounds.width / 2.0 - model.ys_size().width / 2.0 + offsetX,
                             y: offsetY,
                             width: model.ys_size().width,
                             height: model.ys_size().height)
@@ -214,7 +215,7 @@ public class YSToast: NSObject {
         }
         let offsetX = model.ys_offset().horizontal
         let offsetY = model.ys_offset().vertical
-        view.frame = CGRect(x: parentView.bounds.width - view.frame.width + offsetX,
+        view.frame = CGRect(x: parentView.bounds.width - model.ys_size().width + offsetX,
                             y: offsetY + 0,
                             width: model.ys_size().width,
                             height: model.ys_size().height)
@@ -310,39 +311,39 @@ struct YSToastModel: YSToastProtocol {
     var popOffset: UIOffset = UIOffset(horizontal: 0, vertical: 0)
     weak var parentView: UIView?
     weak var customView: UIView?
-    
+
     func ys_direction() -> YSToast.Direction {
         return direction
     }
-    
+
     func ys_size() -> CGSize {
         return popSize
     }
-    
+
     func ys_offset() -> UIOffset {
         return popOffset
     }
-    
+
     func ys_parentView() -> UIView? {
         guard let parent = parentView else {
             return UIApplication.shared.windows.first
         }
         return parent
     }
-    
+
     func ys_view() -> UIView? {
         return customView
     }
 }
 
-class YSToastLabel: UILabel {
+class YSToastLabel: UILabel, YSToastProtocol {
 
     var size: CGSize = CGSize.zero
 
     func ys_view() -> UIView {
         return self
     }
-    
+
     func ys_direction() -> YSToast.Direction {
         return .CC
     }
@@ -369,24 +370,20 @@ public extension YSToastProtocol where Self: UIView {
     func ys_direction() -> YSToast.Direction {
         return .CC
     }
-    
+
     func ys_size() -> CGSize {
         return CGSize(width: 200, height: 33)
     }
-    
+
     func ys_offset() -> UIOffset {
         return UIOffset(horizontal: 0, vertical: 0)
     }
-    
+
     func ys_parentView() -> UIView? {
         return UIApplication.shared.windows.last
     }
-    
+
     func ys_view() -> UIView? {
         return self
     }
-}
-
-extension UIView: YSToastProtocol {
-
 }

@@ -16,6 +16,7 @@
 		07F6E047243F5EAA00F63B00 /* ExampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07F6E046243F5EAA00F63B00 /* ExampleTests.swift */; };
 		07F6E052243F5EAA00F63B00 /* ExampleUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07F6E051243F5EAA00F63B00 /* ExampleUITests.swift */; };
 		69E78A74150764C3338FCC4F /* Pods_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F319786886D987C30E685E7 /* Pods_Example.framework */; };
+		F39F47B224BDA969007B9946 /* Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39F47B124BDA968007B9946 /* Test.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +54,7 @@
 		0F319786886D987C30E685E7 /* Pods_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7E0A67F56C0ACBC515CEC53A /* Pods-Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example.release.xcconfig"; path = "Target Support Files/Pods-Example/Pods-Example.release.xcconfig"; sourceTree = "<group>"; };
 		9ACCD3757E6A93647723111A /* Pods-Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example.debug.xcconfig"; path = "Target Support Files/Pods-Example/Pods-Example.debug.xcconfig"; sourceTree = "<group>"; };
+		F39F47B124BDA968007B9946 /* Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Test.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -113,6 +115,7 @@
 				07F6E038243F5EAA00F63B00 /* Assets.xcassets */,
 				07F6E03A243F5EAA00F63B00 /* LaunchScreen.storyboard */,
 				07F6E03D243F5EAA00F63B00 /* Info.plist */,
+				F39F47B124BDA968007B9946 /* Test.swift */,
 			);
 			path = Example;
 			sourceTree = "<group>";
@@ -328,6 +331,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				07F6E034243F5EA800F63B00 /* ViewController.swift in Sources */,
+				F39F47B224BDA969007B9946 /* Test.swift in Sources */,
 				07F6E030243F5EA800F63B00 /* AppDelegate.swift in Sources */,
 				07F6E032243F5EA800F63B00 /* SceneDelegate.swift in Sources */,
 			);

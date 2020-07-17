@@ -15,6 +15,7 @@ import YSToast
 class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
+
         createUI()
         createAction()
     }
@@ -30,9 +31,13 @@ class ViewController: UIViewController {
     
     private func createAction() {
         testBtn.reactive.controlEvents(UIControl.Event.touchUpInside).observeValues { btn in
-            YSToast.instance.showToast("this is")
+            YSToast.instance.showToast("this is your father")
 //            let customView = CustomToastLabel()
-//            customView.text = "this is my test tittle"
+//            customView.text = "this is my test tittlelllllllllllllll"
+//            customView.textAlignment = .center
+//            customView.backgroundColor = .brown
+//            customView.numberOfLines = 0
+//            customView.backgroundColor = .red
 //            YSToast.instance.showAsyncView(customView)
         }
     }
@@ -44,14 +49,14 @@ class ViewController: UIViewController {
     }()
 }
 
-class CustomToastLabel: UILabel {
+class CustomToastLabel: UILabel, YSToastProtocol {
     // 这个可以默认不写
     func ys_view() -> UIView {
         return self
     }
     
     func ys_direction() -> YSToast.Direction {
-        return .RC
+        return .TL
     }
     
     func ys_size() -> CGSize {
