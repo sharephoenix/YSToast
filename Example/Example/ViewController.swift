@@ -24,14 +24,14 @@ class ViewController: UIViewController {
         view.addSubview(testBtn)
         
         testBtn.snp.makeConstraints { make in
-            make.width.height.equalTo(44)
+            make.width.height.equalTo(144)
             make.center.equalToSuperview()
         }
     }
     
     private func createAction() {
         testBtn.reactive.controlEvents(UIControl.Event.touchUpInside).observeValues { btn in
-            YSToast.instance.showToast("this is your father")
+            YSToast.instance.showToast("this is your father", sync: false)
 //            let customView = CustomToastLabel()
 //            customView.text = "this is my test tittlelllllllllllllll"
 //            customView.textAlignment = .center
@@ -44,6 +44,7 @@ class ViewController: UIViewController {
     
     private let testBtn: UIButton = {
         let button = UIButton()
+        button.setTitle("clicked me", for: .normal)
         button.backgroundColor = .red
         return button
     }()

@@ -91,26 +91,29 @@ public class YSToast: NSObject {
                                  parentView: view.ys_parentView(),
                                  customView: view)
         resetUI(model)
-        animation(view, finish: { _ in
+        animation(view, finish: { [weak self] _ in
+            guard let `self` = self else { return }
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + self.duration, execute: {
-                view.removeFromSuperview()
+                self.hideAnimation(view)
             })
         })
     }
 
     /// 清理所有 toast UI
     @objc public func clearToast() {
+        print("\(#function)")
         if imageStack.count <= 1 {
             return
         }
         for i in (1..<imageStack.count).reversed() {
-            imageStack[i].removeFromSuperview()
-            imageStack.remove(at: i)
+            self.imageStack[i].removeFromSuperview()
+            self.imageStack.remove(at: i)
         }
     }
 
     /// 动画自动运行 有队列的运行
     @objc private func toAutoRun() {
+        print("\(#function)")
         if !Thread.current.isMainThread {
             perform(#selector(toAutoRun), on: Thread.main, with: nil, waitUntilDone: false)
             return
@@ -131,12 +134,13 @@ public class YSToast: NSObject {
 
         resetUI(model)
         animation(view, finish: { _ in
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + self.duration, execute: {
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + self.duration, execute: { [weak self] in
+                guard let `self` = self else { return }
                 if self.imageStack.count > 0 {
                     self.imageStack.removeAll(where: { (current) -> Bool in
                         return view === current
                     })
-                    view.removeFromSuperview()
+                    self.hideAnimation(view)
                 }
 
                 self.isRunning = false
@@ -150,6 +154,7 @@ public class YSToast: NSObject {
     ///
     /// - Parameter view: 需要重置布局的 view
     private func resetUI(_ model: YSToastModel) {
+        print("\(#function)")
         switch model.direction {
         case .TC:
             resetUITC(model)
@@ -173,6 +178,7 @@ public class YSToast: NSObject {
     }
 
     private func resetUITC(_ model: YSToastModel) {
+        print("\(#function)")
         guard let view = model.ys_view(), let parentView = model.ys_parentView() else {
             return
         }
@@ -296,11 +302,19 @@ public class YSToast: NSObject {
     /// - Parameter imageView: 需要动画的view
     private func animation(_ view: UIView, finish: @escaping ((Bool) -> Void)) {
         view.transform = CGAffineTransform.init(scaleX: 0.9, y: 0.9)
-
-        UIView.animate(withDuration: 0.3, animations: {
+        UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.25, initialSpringVelocity: 1.2, options: UIView.AnimationOptions.curveEaseOut, animations: {
             view.transform = CGAffineTransform.identity
         }) { flag in
             finish(flag)
+        }
+    }
+
+    private func hideAnimation(_ view: UIView) {
+        UIView.animate(withDuration: 0.3, animations: {
+            view.transform = CGAffineTransform.init(scaleX: 0.75, y: 0.75)
+            view.alpha = 0.1
+        }) { _ in
+            view.removeFromSuperview()
         }
     }
 }
